@@ -1,0 +1,41 @@
+@page
+@model SmartGallery.Pages.UploadModel
+@{
+    ViewData["Title"] = "Upload billede";
+}
+@{
+    Layout = "_Layout";
+}
+
+<section class="max-w-3xl mx-auto p-6">
+    <header class="page-header">
+        <div class="page-title">
+            <h1 class="text-3xl font-bold text-brand-900">Upload billede</h1>
+            <p class="text-brand-600">Understøtter JPG, PNG, WEBP og HEIC. Max 25 MB.</p>
+        </div>
+        <nav class="page-actions">
+            <a class="btn btn-ghost" href="/">Til galleri</a>
+        </nav>
+    </header>
+
+    <form method="post" enctype="multipart/form-data" class="card form">
+        @Html.AntiForgeryToken()
+        <div class="form-field">
+            <label class="label">Billedfil</label>
+            <input type="file" name="File" accept="image/*" class="input" />
+            <span asp-validation-for="File" class="validation"></span>
+        </div>
+
+        <div class="form-field">
+            <label class="label">Beskrivelse</label>
+            <textarea name="Description" rows="3" class="textarea" placeholder="F.eks. ‘Solnedgang ved stranden’"></textarea>
+            <span asp-validation-for="Description" class="validation"></span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Upload</button>
+            <a href="/" class="btn btn-ghost">Annullér</a>
+        </div>
+    </form>
+
+</section>

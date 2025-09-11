@@ -1,0 +1,52 @@
+@page
+@model SmartGallery.Pages.IndexModel
+@{
+    ViewData["Title"] = "Galleri";
+}
+@{
+    Layout = "_Layout";
+}
+
+<section class="max-w-7xl mx-auto p-6">
+    <header class="page-header">
+        <div class="page-title">
+            <h1 class="text-3xl font-bold text-brand-900">Billedgalleri</h1>
+            <p class="text-brand-600">Upload, se og del billeder – 100% online.</p>
+        </div>
+        <nav class="page-actions">
+            <a class="btn btn-primary" href="/Upload">Upload billede</a>
+        </nav>
+    </header>
+
+    @if (!Model.Items.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-illustration" aria-hidden="true">📷</div>
+            <h2>Intet galleri endnu</h2>
+            <p>Kom i gang ved at uploade dit første billede.</p>
+            <a class="btn btn-primary" href="/Upload">Upload billede</a>
+        </div>
+    }
+    else
+    {
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            @foreach (var item in Model.Items)
+            {
+                <article class="card">
+                    <div class="card-media">
+                        <img src="@item.ImageUrl" alt="Billede" class="w-full h-56 object-cover" loading="lazy" />
+                    </div>
+                    <div class="card-body">
+                        <p class="meta">@item.UploadedAt.ToLocalTime().ToString("dd-MM-yyyy HH:mm")</p>
+                        <p class="title">@item.Description</p>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</section>
+<footer class="app-footer">
+    <div class="max-w-7xl mx-auto p-6">
+        <p class="text-brand-500">© @DateTime.UtcNow.Year SmartGallery</p>
+    </div>
+</footer>

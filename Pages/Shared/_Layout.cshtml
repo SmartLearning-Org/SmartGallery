@@ -1,0 +1,70 @@
+@{
+    var title = ViewData["Title"] as string ?? "SmartGallery";
+}
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>@title – SmartGallery</title>
+    <meta name="theme-color" content="#4a56e8" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="SmartGallery – upload, se og del billeder direkte i browseren." />
+
+    <!-- Tailwind CDN (utilities) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                brand: {
+                  50:  '#eef0ff',
+                  100: '#e0e4ff',
+                  300: '#9aa3ff',
+                  500: '#5f6aff',
+                  600: '#4a56e8',
+                  700: '#3f47d6',
+                  900: '#1e245d'
+                }
+              }
+            }
+          }
+        }
+    </script>
+
+    <!-- Din komponent/utility CSS (ligger efter Tailwind for at "vinde" ved samme selectors) -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="bg-brand-50 text-brand-900 antialiased">
+    <!-- Sticky topbar -->
+    <header class="sticky top-0 z-40 bg-gradient-to-r from-brand-700 to-brand-500 text-white shadow">
+        <div class="max-w-7xl mx-auto p-5 flex items-center justify-between">
+            <a href="~/" class="font-extrabold tracking-tight text-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded">
+                SmartGallery
+            </a>
+            <nav class="flex items-center gap-4 text-sm">
+                <a class="hover:underline underline-offset-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded px-1"
+                   href="~/">Galleri</a>
+                <a class="hover:underline underline-offset-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded px-1"
+                   href="~/Upload">Upload</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main id="main" class="min-h-[60vh]">
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-16 border-t border-brand-100 bg-white/70 backdrop-blur">
+        <div class="max-w-7xl mx-auto p-6 text-sm text-brand-600">
+            © @DateTime.Now.Year SmartGallery
+        </div>
+    </footer>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
