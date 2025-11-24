@@ -18,6 +18,17 @@
         </nav>
     </header>
 
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-error" role="alert">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-content">
+                <strong>Fejl ved indlæsning af galleri</strong>
+                <p>@Model.ErrorMessage</p>
+            </div>
+        </div>
+    }
+
     @if (!Model.Items.Any())
     {
         <div class="empty-state">

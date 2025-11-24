@@ -39,8 +39,22 @@ namespace SmartGallery.Services
                 if (string.IsNullOrWhiteSpace(_opts.ConnectionString))
                     throw new InvalidOperationException("Storage:ConnectionString mangler");
 
-                _serviceClient = new BlobServiceClient(_opts.ConnectionString);
-                _accountName = _serviceClient.Uri.Host.Split('.')[0];
+                try
+                {
+                    _serviceClient = new BlobServiceClient(_opts.ConnectionString);
+                    _accountName = _serviceClient.Uri.Host.Split('.')[0];
+                }
+                catch (FormatException)
+                {
+                    throw new InvalidOperationException(
+                        "Storage:ConnectionString har et ugyldigt format. " +
+                        "Forventet format: 'DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=...'");
+                }
+                catch (ArgumentException ex)
+                {
+                    throw new InvalidOperationException(
+                        $"Storage:ConnectionString er ugyldig: {ex.Message}");
+                }
             }
 
             _container = _serviceClient.GetBlobContainerClient(_opts.ContainerName);

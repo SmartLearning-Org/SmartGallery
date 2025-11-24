@@ -18,6 +18,24 @@
         </nav>
     </header>
 
+    @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ContainsKey("") && ViewData.ModelState[""] != null)
+    {
+        var errors = ViewData.ModelState[""]!.Errors;
+        if (errors.Any())
+        {
+            <div class="alert alert-error" role="alert">
+                <div class="alert-icon">⚠️</div>
+                <div class="alert-content">
+                    <strong>Upload fejlede</strong>
+                    @foreach (var error in errors)
+                    {
+                        <p>@error.ErrorMessage</p>
+                    }
+                </div>
+            </div>
+        }
+    }
+
     <form method="post" enctype="multipart/form-data" class="card form">
         @Html.AntiForgeryToken()
         <div class="form-field">

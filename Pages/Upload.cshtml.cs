@@ -10,7 +10,7 @@ namespace SmartGallery.Pages
         public UploadModel(BlobImageService images) => _images = images;
 
         [BindProperty]
-        public IFormFile? File { get; set; }
+        public new IFormFile? File { get; set; }
 
         [BindProperty]
         public string Description { get; set; } = string.Empty;
@@ -33,11 +33,49 @@ namespace SmartGallery.Pages
                 return Page();
             }
 
-            await using var stream = File.OpenReadStream();
-            await _images.UploadAsync(stream, File.FileName, File.ContentType, Description ?? string.Empty);
+            try
+            {
+                await using var stream = File.OpenReadStream();
+                await _images.UploadAsync(stream, File.FileName, File.ContentType, Description ?? string.Empty);
 
-            Message = "Billedet er uploadet.";
-            return RedirectToPage("/Index");
+                Message = "Billedet er uploadet.";
+                return RedirectToPage("/Index");
+            }
+            catch (InvalidOperationException ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return Page();
+            }
+            catch (Azure.RequestFailedException ex) when (ex.Status == 403)
+            {
+                ModelState.AddModelError("", "Adgang nægtet til storage. Kontrollér at applikationen har de nødvendige rettigheder.");
+                return Page();
+            }
+            catch (Azure.RequestFailedException ex) when (ex.Status == 413 || ex.ErrorCode == "RequestBodyTooLarge")
+            {
+                ModelState.AddModelError("File", "Filen er for stor. Maksimal størrelse er 25MB.");
+                return Page();
+            }
+            catch (Azure.RequestFailedException ex) when (ex.ErrorCode == "InsufficientAccountPermissions" || ex.ErrorCode == "AccountStorageQuotaExceeded")
+            {
+                ModelState.AddModelError("", "Storage kontoen har ikke mere plads. Kontakt administrator.");
+                return Page();
+            }
+            catch (Azure.RequestFailedException ex)
+            {
+                ModelState.AddModelError("", $"Azure Storage fejl: {ex.Message}");
+                return Page();
+            }
+            catch (IOException ex)
+            {
+                ModelState.AddModelError("File", $"Kunne ikke læse filen: {ex.Message}");
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Uventet fejl ved upload: {ex.Message}");
+                return Page();
+            }
         }
     }
 }
